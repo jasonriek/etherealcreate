@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/quill.snow.css" />
+  <script src="/js/quill.js"></script>
+  <script src="/js/image-resize.min.js"></script>
+  <title>Ethereal Create</title>
+  <!-- Add your CSS styles or link to a stylesheet here -->
+</head>
+<body>
+  <h1>Ethereal Create</h1>
+  <a href="/login">Login</a>
+  <% if (user) { %>
+    <!-- Display blog writing tools only for certain users -->
+    <% if (user.role === 'admin') { %>
+      <h2>Blog Writing Tools</h2>
+      <form action="/post" method="post">
+        <label for="title">Title:</label>
+        <input type="text" name="title" required>
+        <br>
+        <label for="content">Content:</label>
+        <div name="content" id="editor-container"></div>
+        <input type="hidden" name="content" id="hidden-editor-input">
+        <br>
+        <button type="submit">Submit</button>
+      </form>
+    <% } %>
+  <% } %>
+
+  <ul>
+    <% posts.forEach(post => { %>
+      <li>
+        <a href="/post/<%= post.id %>"><%= post.title %></a>
+      </li>
+    <% }); %>
+  </ul>
+
+  <h2>Recent Posts</h2>
+  <!-- Display recent posts here -->
+
+<script src="/js/quill_editor.js"></script>
+</body>
+</html>

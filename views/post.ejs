@@ -1,0 +1,48 @@
+<!-- views/post.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/quill.snow.css" />
+    <script src="/js/quill.js"></script>
+    <script src="/js/image-resize.min.js"></script>
+    <title>Ethereal Create</title>
+</head>
+<body>
+    <h1><%- post.title %></h1>
+    <p><%- post.content %></p>
+    <hr>
+    <!-- Render comment UI only if user has 'user' or 'admin' role -->
+    <% if (user) { %>
+        <% if (user.role  && (user.role  === 'user' || user.role  === 'admin')) { %>
+            <form action="/comment" method="post">
+                <label for="content">Comment:</label>
+                <div name="content" id="editor-container"></div>
+                <input type="hidden" name="content" id="hidden-editor-input">
+                <input type="hidden" name="postId" value="<%= post.id %>">
+                <button type="submit">Submit Comment</button>
+            </form>
+        <% } %>
+    <% } else { %>
+        <p>You need to be logged in to leave a comment.</p>
+    <% } %>
+    
+    <h2>Comments</h2>
+    <% comments.forEach(comment => { %>
+    <ul>
+        <li>
+            <h3><%= comment.username %></h3>
+        </li>
+        <li>
+            <ul>
+                <li><%- comment.content %></li>
+            </ul>
+        </li>
+    </ul>
+    <% }) %>
+
+    <script src="/js/quill_editor.js"></script>
+</body>
+</html>
+
