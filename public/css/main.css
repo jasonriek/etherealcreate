@@ -4,30 +4,8 @@
 }
 
 body {margin: 0;
-    background-color: #102336;
+    background-color: #000000;
   }
-  .bg {
-    position: absolute;
-    top: 0;
-    left: 10px;
-    width: 100%;
-  }
-  @keyframes blink {
-    0%   { opacity: 0; }
-    50% { opacity: 0.6; }
-    100% { opacity: 0; }
-  }
-  .stars-bg__star {
-    opacity: 0;
-    animation: blink 3s infinite;
-  }
-  .stars-bg__blink-2 {
-    animation-delay: 1s;
-  }
-  .stars-bg__blink-3 {
-    animation-delay: 2s;
-  }
-
 
 .header-container {
     width: 100%;
@@ -47,7 +25,7 @@ h1 {
     font-size: 70px;
     -webkit-text-stroke: 1px white;
     font-family: ringm;
-    line-height: 85px;
+    line-height: 90px;
 }
 
 .header-click {
@@ -73,7 +51,7 @@ h1 {
   background-size: contain;
   background-position: center; /* Center the image*/
   z-index: 1;
-  top: 250px;
+  top: 240px;
 }
 
 .blog-preview-img {
@@ -114,6 +92,7 @@ h1 {
 .w3-container, .w3-panel {
     background-color: transparent;
     padding: 0;
+    margin-top: -17px;
 }
 
 .title-area {
@@ -126,6 +105,75 @@ canvas {
     top: 1px;
     z-index: -1;
     width: 100%;
+}
+
+@keyframes move-twink-back {
+  from {background-position:0 0;}
+  to {background-position:-10000px 5000px;}
+}
+@-webkit-keyframes move-twink-back {
+  from {background-position:0 0;}
+  to {background-position:-10000px 5000px;}
+}
+@-moz-keyframes move-twink-back {
+  from {background-position:0 0;}
+  to {background-position:-10000px 5000px;}
+}
+@-ms-keyframes move-twink-back {
+  from {background-position:0 0;}
+  to {background-position:-10000px 5000px;}
+}
+@keyframes move-clouds-back {
+  from {background-position:0 0;}
+  to {background-position:10000px 0;}
+}
+@-webkit-keyframes move-clouds-back {
+  from {background-position:0 0;}
+  to {background-position:10000px 0;}
+}
+@-moz-keyframes move-clouds-back {
+  from {background-position:0 0;}
+  to {background-position:10000px 0;}
+}
+@-ms-keyframes move-clouds-back {
+  from {background-position: 0;}
+  to {background-position:10000px 0;}
+}
+.stars, .twinkling, .clouds {
+position:absolute;
+top:0;
+left:0;
+right:0;
+bottom:0;
+width:100%;
+height:100%;
+display:block;
+}
+.stars {
+background:#000 url(/images/stars.png) repeat top center;
+background-repeat: repeat;
+height: 1300px;
+z-index:-2;
+}
+.twinkling{
+background:transparent url(/images/twinkling.png) repeat top center;
+z-index:-1;
+-moz-animation:move-twink-back 200s linear infinite;
+-ms-animation:move-twink-back 200s linear infinite;
+-o-animation:move-twink-back 200s linear infinite;
+-webkit-animation:move-twink-back 200s linear infinite;
+animation:move-twink-back 200s linear infinite;
+height: 1300px;
+}
+.clouds{
+  background:transparent url(/images/clouds2.png) repeat top center;
+  z-index:-1;
+-moz-animation:move-clouds-back 200s linear infinite;
+-ms-animation:move-clouds-back 200s linear infinite;
+-o-animation:move-clouds-back 200s linear infinite;
+-webkit-animation:move-clouds-back 200s linear infinite;
+animation:move-clouds-back 200s linear infinite;
+height: 1300px;
 }
 
 @media (max-width:600px) {

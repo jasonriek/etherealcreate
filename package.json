@@ -28,6 +28,8 @@
     "fireflies.js": "^1.1.2",
     "multer": "^1.4.5-lts.1",
     "pm2": "^5.3.0",
+    "quill-image-compress": "^1.2.30",
+    "quill-image-resize-module-fix-for-mobile": "^3.0.4",
     "session": "^0.1.0"
   }
 }

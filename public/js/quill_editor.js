@@ -1,3 +1,5 @@
+Quill.register("modules/imageCompressor", imageCompressor);
+
 // Initialize Quill
 const quill = new Quill('#editor-container', {
     theme: 'snow',
@@ -8,7 +10,16 @@ const quill = new Quill('#editor-container', {
             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
             ['link', 'image'],                       // image insertion
           ],
-        imageResize: {} // Enable image resizing
+        imageResize: {}, // Enable image resizing
+        imageCompressor: {
+            quality: 0.9,
+            maxWidth: 200,
+            maxHeight: 200,
+            imageType: 'image/png',
+            keepImageTypes: ['image/jpeg', 'image/png'],
+            ignoreImageTypes: ['image/gif'],
+            debug: true
+          }
     }
 });
 
