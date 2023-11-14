@@ -23,7 +23,12 @@ h1 {
     margin-top: 0;
     padding-top: 0;
     font-size: 70px;
-    -webkit-text-stroke: 1px white;
+    text-shadow:
+    3px 3px 0 #ffffff,
+  -1px -1px 0 #ffffff,  
+   1px -1px 0 #ffffff,
+   -1px 1px 0 #ffffff,
+    1px 1px 0 #ffffff;
     font-family: ringm;
     line-height: 90px;
 }
