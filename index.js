@@ -9,6 +9,8 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = 55555;
+const DEFAULT_PAGE = 1;
+const DEFAULT_PER_PAGE = 1;
 
 // SQLite Database Setup
 const db = new betterSqlite('ec.db');
@@ -86,9 +88,35 @@ const authenticate = (req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-    console.log('User Object:', res.locals.user);
-    const posts = db.prepare('SELECT * FROM posts').all();
-    res.render('index', { posts });
+    //console.log('User Object:', res.locals.user);
+    let context = {};
+    const posts = db.prepare(`SELECT posts.*, 
+    (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count
+    FROM posts
+    ORDER BY posts.id DESC
+    LIMIT ${DEFAULT_PER_PAGE}`).all();
+    const page_count = db.prepare(`SELECT COUNT(*) AS cnt FROM posts`).get().cnt;
+    context['posts'] = posts;
+    context['page'] = DEFAULT_PAGE;
+    context['page_count'] = page_count;
+    res.render('index', context);
+});
+
+app.get('/page/:page', (req, res) => {
+  let context = {};
+  const page = parseInt(req.params.page);
+  let offset = (DEFAULT_PER_PAGE * (page - 1));
+  const posts = db.prepare(`SELECT posts.*, 
+  (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.id) AS comment_count
+  FROM posts
+  ORDER BY posts.id DESC
+  LIMIT ${DEFAULT_PER_PAGE} OFFSET ${offset}`).all();
+  const page_count = db.prepare(`SELECT COUNT(*) AS cnt FROM posts`).get().cnt;
+  context['posts'] = posts;
+  context['page'] = page;
+  context['page_count'] = page_count;
+  res.render('index', context);
+  //ORDER BY ${CREATION_TIME_COLUMN} DESC LIMIT ${limit} OFFSET ${offset};
 });
   
 app.post('/post', [check('title').notEmpty().withMessage('Title cannot be empty'), check('content').notEmpty().withMessage('Content cannot be empty'),], async (req, res) => {
@@ -100,6 +128,7 @@ app.post('/post', [check('title').notEmpty().withMessage('Title cannot be empty'
     const { title, content } = req.body;
     const userId = res.locals.user ? res.locals.user.id : null;
     let sanitizedContent = content;
+    let cover_image = null;
 
     // Extract and save embedded images (Base64 data)
     const matches = content.match(/src="data:image\/[^;]+;base64[^"]+"/g);
@@ -119,7 +148,13 @@ app.post('/post', [check('title').notEmpty().withMessage('Title cannot be empty'
       // Replace image sources with filenames in the content
       sanitizedContent = content;
       images.forEach((image, index) => {
-      sanitizedContent = sanitizedContent.replace(matches[index], `src="/uploads/${image}"`)
+      if(index === 0) {
+        cover_image = image;
+        sanitizedContent = sanitizedContent.replace(matches[index], " ");
+      }
+      else {
+        sanitizedContent = sanitizedContent.replace(matches[index], `src="/uploads/${image}"`);
+      }
       });
     }
   
@@ -130,7 +165,8 @@ app.post('/post', [check('title').notEmpty().withMessage('Title cannot be empty'
     }
   
     // Continue with the post creation logic
-    db.prepare('INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)').run(title, sanitizedContent, userId);
+    const currentDate = new Date().toISOString(); // Get the current date and time in ISO format
+    db.prepare('INSERT INTO posts (title, content, user_id, cover_image, created_at) VALUES (?, ?, ?, ?, ?)').run(title, sanitizedContent, userId, cover_image, currentDate);
     res.redirect('/');
 });
   
@@ -186,7 +222,8 @@ app.post('/comment', [check('content').notEmpty().withMessage('Comment cannot be
     }
 
     // Continue with the comment creation logic
-    db.prepare('INSERT INTO comments (post_id, content, user_id, username) VALUES (?, ?, ?, ?)').run(postId, sanitizedContent, userId, username);
+    const currentDate = new Date().toISOString(); // Get the current date and time in ISO format
+    db.prepare('INSERT INTO comments (post_id, content, user_id, username, created_at) VALUES (?, ?, ?, ?, ?)').run(postId, sanitizedContent, userId, username, currentDate);
     res.redirect(`/post/${postId}`);
 });
   
